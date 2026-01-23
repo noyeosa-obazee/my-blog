@@ -7,6 +7,42 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Blog_Role {
+  USER
+  ADMIN
+}
+
+model Blog_User {
+  id       Int            @id @default(autoincrement())
+  username String?
+  email    String         @unique
+  password String
+  role     Blog_Role      @default(USER)
+  posts    Blog_Post[]
+  comments Blog_Comment[]
+}
+
+model Blog_Post {
+  id        String         @id @default(uuid())
+  title     String
+  text      String
+  published Boolean        @default(true)
+  date      DateTime       @default(now())
+  user      Blog_User      @relation(fields: [userId], references: [id])
+  userId    Int
+  comments  Blog_Comment[]
+}
+
+model Blog_Comment {
+  id     String    @id @default(uuid())
+  text   String
+  date   DateTime  @default(now())
+  user   Blog_User @relation(fields: [userId], references: [id])
+  userId Int
+  post   Blog_Post @relation(fields: [postId], references: [id])
+  postId String
+}
+
 model File {
   id           String      @id
   url          String
@@ -21,8 +57,6 @@ model File {
   Folder       Folder?     @relation(fields: [folderId], references: [id])
   User         User        @relation(fields: [userId], references: [id])
   ShareLink    ShareLink[]
-
-  @@ignore
 }
 
 model Folder {
@@ -33,8 +67,6 @@ model Folder {
   File      File[]
   User      User        @relation(fields: [userId], references: [id])
   ShareLink ShareLink[]
-
-  @@ignore
 }
 
 model Session {
@@ -42,8 +74,6 @@ model Session {
   sid       String   @unique
   data      String
   expiresAt DateTime
-
-  @@ignore
 }
 
 model ShareLink {
@@ -57,8 +87,6 @@ model ShareLink {
   File      File?    @relation(fields: [fileId], references: [id])
   Folder    Folder?  @relation(fields: [folderId], references: [id])
   User      User     @relation(fields: [userId], references: [id])
-
-  @@ignore
 }
 
 model User {
@@ -68,8 +96,6 @@ model User {
   File      File[]
   Folder    Folder[]
   ShareLink ShareLink[]
-
-  @@ignore
 }
 
 model authors {
@@ -77,8 +103,6 @@ model authors {
   name  String  @db.VarChar(255)
   bio   String?
   books books[]
-
-  @@ignore
 }
 
 model books {
@@ -90,16 +114,12 @@ model books {
   genre_id       Int?
   authors        authors? @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   genres         genres?  @relation(fields: [genre_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@ignore
 }
 
 model genres {
   id    Int     @id @default(autoincrement())
   name  String  @db.VarChar(100)
   books books[]
-
-  @@ignore
 }
 
 model messages {
@@ -107,8 +127,6 @@ model messages {
   text   String?
   sender String? @db.VarChar(255)
   added  String?
-
-  @@ignore
 }
 
 model mo_posts {
@@ -118,8 +136,6 @@ model mo_posts {
   text      String
   user_id   Int?
   mo_users  mo_users? @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@ignore
 }
 
 model mo_users {
@@ -130,6 +146,4 @@ model mo_users {
   membership_status Boolean?   @default(false)
   is_admin          Boolean?   @default(false)
   mo_posts          mo_posts[]
-
-  @@ignore
 }
