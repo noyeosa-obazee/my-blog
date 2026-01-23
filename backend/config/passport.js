@@ -23,4 +23,4 @@ const jwtStrategy = new JwtStrategy(options, async (payload, done) => {
   }
 });
 
-module.exports = { jwtStrategy, prisma };
+module.exports = jwtStrategy;

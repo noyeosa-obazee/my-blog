@@ -3,7 +3,7 @@ const passport = require("passport");
 const postRoutes = require("./routes/postsRouter");
 const authRoutes = require("./routes/authRouter");
 const cors = require("cors");
-const { jwtStrategy } = require("./config/passport");
+const jwtStrategy = require("./config/passport");
 require("dotenv").config();
 
 const app = express();
