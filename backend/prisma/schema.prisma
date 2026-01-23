@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model File {
+  id           String      @id
+  url          String
+  title        String?
+  uploadedAt   DateTime    @default(now())
+  userId       Int
+  fileType     String
+  originalName String
+  size         Int
+  folderId     Int?
+  publicId     String
+  Folder       Folder?     @relation(fields: [folderId], references: [id])
+  User         User        @relation(fields: [userId], references: [id])
+  ShareLink    ShareLink[]
+
+  @@ignore
+}
+
+model Folder {
+  id        Int         @id @default(autoincrement())
+  name      String
+  userId    Int
+  createdAt DateTime    @default(now())
+  File      File[]
+  User      User        @relation(fields: [userId], references: [id])
+  ShareLink ShareLink[]
+
+  @@ignore
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+
+  @@ignore
+}
+
+model ShareLink {
+  id        String   @id
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  fileId    String?
+  folderId  Int?
+  userId    Int
+  File      File?    @relation(fields: [fileId], references: [id])
+  Folder    Folder?  @relation(fields: [folderId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
+
+  @@ignore
+}
+
+model User {
+  id        Int         @id @default(autoincrement())
+  email     String      @unique
+  password  String
+  File      File[]
+  Folder    Folder[]
+  ShareLink ShareLink[]
+
+  @@ignore
+}
+
+model authors {
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(255)
+  bio   String?
+  books books[]
+
+  @@ignore
+}
+
+model books {
+  id             Int      @id @default(autoincrement())
+  title          String   @db.VarChar(255)
+  price          Decimal? @db.Decimal(10, 2)
+  stock_quantity Int?     @default(0)
+  author_id      Int?
+  genre_id       Int?
+  authors        authors? @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  genres         genres?  @relation(fields: [genre_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+model genres {
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(100)
+  books books[]
+
+  @@ignore
+}
+
+model messages {
+  id     Int     @id @default(autoincrement())
+  text   String?
+  sender String? @db.VarChar(255)
+  added  String?
+
+  @@ignore
+}
+
+model mo_posts {
+  post_id   Int       @id @default(autoincrement())
+  title     String    @db.VarChar(200)
+  timestamp DateTime? @default(now()) @db.Timestamp(6)
+  text      String
+  user_id   Int?
+  mo_users  mo_users? @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@ignore
+}
+
+model mo_users {
+  id                Int        @id @default(autoincrement())
+  full_name         String     @db.VarChar(100)
+  username          String     @unique @db.VarChar(50)
+  password          String     @db.VarChar(100)
+  membership_status Boolean?   @default(false)
+  is_admin          Boolean?   @default(false)
+  mo_posts          mo_posts[]
+
+  @@ignore
+}
