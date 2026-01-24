@@ -4,12 +4,16 @@ const prisma = require("../config/prisma.js");
 
 const signUp = async (req, res) => {
   try {
-    const { email, password, username } = req.body;
+    const { email, password, username, confirmPassword } = req.body;
 
     if (!email || !password) {
       return res
         .status(400)
         .json({ message: "Email and password are required" });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
     }
 
     const existingUser = await prisma.blog_User.findUnique({
