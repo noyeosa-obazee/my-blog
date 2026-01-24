@@ -119,4 +119,12 @@ const getPosts = async (req, res) => {
   }
 };
 
-module.exports = { signUp, logIn, getPosts };
+const requireAdmin = (req, res, next) => {
+  if (req.user.role !== "ADMIN") {
+    return res.status(403).json({ message: "Forbidden: Admins only" });
+  }
+
+  next();
+};
+
+module.exports = { signUp, logIn, getPosts, requireAdmin };
