@@ -1,5 +1,4 @@
 const { Router } = require("express");
-const prisma = require("../config/prisma");
 const ctrl = require("../controllers/appControllers");
 const passport = require("passport");
 const postRoutes = Router();
@@ -27,4 +26,11 @@ postRoutes.delete(
   ctrl.requireAdmin,
   ctrl.deletePost,
 );
+
+postRoutes.post(
+  "/:postId/comments",
+  passport.authenticate("jwt", { session: false }),
+  ctrl.createComment,
+);
+
 module.exports = postRoutes;

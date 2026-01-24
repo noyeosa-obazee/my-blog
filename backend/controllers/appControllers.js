@@ -109,6 +109,11 @@ const getPosts = async (req, res) => {
         user: {
           select: { username: true },
         },
+        comments: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 
@@ -235,6 +240,105 @@ const readPost = async (req, res) => {
   }
 };
 
+const deleteComment = async (req, res) => {
+  try {
+    const commentId = req.params.commentId;
+
+    const comment = await prisma.blog_Comment.findUnique({
+      where: { id: commentId },
+    });
+
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    const isAuthor = comment.userId === req.user.id;
+    const isAdmin = req.user.role === "ADMIN";
+
+    if (!isAuthor && !isAdmin) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to delete this comment" });
+    }
+
+    await prisma.comment.delete({
+      where: { id: commentId },
+    });
+
+    res.json({ message: "Comment deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error deleting comment" });
+  }
+};
+
+const updateComment = async (req, res) => {
+  try {
+    const commentId = req.params.commentId;
+    const { text } = req.body;
+
+    const comment = await prisma.blog_Comment.findUnique({
+      where: { id: commentId },
+    });
+
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    if (comment.userId !== req.user.id) {
+      return res
+        .status(403)
+        .json({ message: "You can only edit your own comments" });
+    }
+
+    const updatedComment = await prisma.comment.update({
+      where: { id: commentId },
+      data: { text: text },
+    });
+
+    res.json({ message: "Comment updated", comment: updatedComment });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error updating comment" });
+  }
+};
+
+const createComment = async (req, res) => {
+  try {
+    const postId = parseInt(req.params.postId);
+
+    const { text } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ message: "Comment cannot be empty" });
+    }
+
+    const postExists = await prisma.post.findUnique({ where: { id: postId } });
+    if (!postExists) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const newComment = await prisma.comment.create({
+      data: {
+        text: text,
+        postId: postId,
+        userId: req.user.id,
+      },
+
+      include: {
+        user: {
+          select: { username: true, email: true },
+        },
+      },
+    });
+
+    res.status(201).json(newComment);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error posting comment" });
+  }
+};
+
 module.exports = {
   signUp,
   logIn,
@@ -244,4 +348,7 @@ module.exports = {
   readPost,
   updatePost,
   deletePost,
+  deleteComment,
+  updateComment,
+  createComment,
 };
