@@ -155,4 +155,93 @@ const createPost = async (req, res) => {
     res.status(500).json({ message: "Server error while creating post" });
   }
 };
-module.exports = { signUp, logIn, getPosts, requireAdmin, createPost };
+
+const updatePost = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const { title, text, published } = req.body;
+
+    const updatedPost = await prisma.blog_Post.update({
+      where: { id: postId },
+      data: {
+        title: title,
+        text: text,
+        published: published,
+      },
+    });
+
+    res.json({ message: "Post updated!", post: updatedPost });
+  } catch (err) {
+    if (err.code === "P2025") {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    console.error(err);
+    res.status(500).json({ message: "Error updating post" });
+  }
+};
+
+const deletePost = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+
+    await prisma.post.delete({
+      where: { id: postId },
+    });
+
+    res.json({ message: "Post deleted successfully" });
+  } catch (err) {
+    if (err.code === "P2025") {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    console.error(err);
+    res.status(500).json({ message: "Error deleting post" });
+  }
+};
+
+const readPost = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+      include: {
+        user: {
+          select: { username: true, email: true },
+        },
+
+        comments: {
+          orderBy: { date: "desc" },
+          include: {
+            user: {
+              select: { username: true, email: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (!post.published) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.json(post);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error fetching post" });
+  }
+};
+
+module.exports = {
+  signUp,
+  logIn,
+  getPosts,
+  requireAdmin,
+  createPost,
+  readPost,
+  updatePost,
+  deletePost,
+};
