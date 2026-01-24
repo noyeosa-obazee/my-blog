@@ -93,4 +93,29 @@ const logIn = async (req, res) => {
   }
 };
 
-module.exports = { signUp, logIn };
+const getPosts = async (req, res) => {
+  try {
+    const posts = await prisma.blog_Post.findMany({
+      orderBy: {
+        date: "desc",
+      },
+
+      where: {
+        published: true,
+      },
+
+      include: {
+        user: {
+          select: { username: true },
+        },
+      },
+    });
+
+    res.json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error fetching posts" });
+  }
+};
+
+module.exports = { signUp, logIn, getPosts };
