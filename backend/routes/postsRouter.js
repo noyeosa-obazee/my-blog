@@ -33,4 +33,6 @@ postRoutes.post(
   ctrl.createComment,
 );
 
+postRoutes.get("/:postId/comments", ctrl.getPostComments);
+
 module.exports = postRoutes;

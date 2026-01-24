@@ -265,7 +265,7 @@ const deleteComment = async (req, res) => {
         .json({ message: "You are not authorized to delete this comment" });
     }
 
-    await prisma.comment.delete({
+    await prisma.blog_Comment.delete({
       where: { id: commentId },
     });
 
@@ -295,7 +295,7 @@ const updateComment = async (req, res) => {
         .json({ message: "You can only edit your own comments" });
     }
 
-    const updatedComment = await prisma.comment.update({
+    const updatedComment = await prisma.blog_Comment.update({
       where: { id: commentId },
       data: { text: text },
     });
@@ -309,7 +309,7 @@ const updateComment = async (req, res) => {
 
 const createComment = async (req, res) => {
   try {
-    const postId = parseInt(req.params.postId);
+    const postId = req.params.postId;
 
     const { text } = req.body;
 
@@ -317,12 +317,14 @@ const createComment = async (req, res) => {
       return res.status(400).json({ message: "Comment cannot be empty" });
     }
 
-    const postExists = await prisma.post.findUnique({ where: { id: postId } });
+    const postExists = await prisma.blog_Post.findUnique({
+      where: { id: postId },
+    });
     if (!postExists) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    const newComment = await prisma.comment.create({
+    const newComment = await prisma.blog_Comment.create({
       data: {
         text: text,
         postId: postId,
@@ -343,6 +345,36 @@ const createComment = async (req, res) => {
   }
 };
 
+const getPostComments = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+
+    const comments = await prisma.blog_Comment.findMany({
+      where: {
+        postId: postId,
+      },
+
+      orderBy: {
+        date: "desc",
+      },
+      include: {
+        user: {
+          select: {
+            username: true,
+            email: true,
+            // id: true // (Optional)  in case I need clickable profile links
+          },
+        },
+      },
+    });
+
+    res.json(comments);
+  } catch (err) {
+    console.error("Error fetching comments:", err);
+    res.status(500).json({ message: "Error fetching comments" });
+  }
+};
+
 module.exports = {
   signUp,
   logIn,
@@ -355,4 +387,5 @@ module.exports = {
   deleteComment,
   updateComment,
   createComment,
+  getPostComments,
 };
