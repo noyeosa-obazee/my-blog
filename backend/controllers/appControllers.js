@@ -193,7 +193,7 @@ const deletePost = async (req, res) => {
   try {
     const postId = req.params.postId;
 
-    await prisma.post.delete({
+    await prisma.blog_Post.delete({
       where: { id: postId },
     });
 
@@ -211,7 +211,7 @@ const readPost = async (req, res) => {
   try {
     const postId = req.params.postId;
 
-    const post = await prisma.post.findUnique({
+    const post = await prisma.blog_Post.findUnique({
       where: { id: postId },
       include: {
         user: {
