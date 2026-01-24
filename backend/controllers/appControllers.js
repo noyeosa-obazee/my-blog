@@ -85,6 +85,7 @@ const logIn = async (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (err) {
