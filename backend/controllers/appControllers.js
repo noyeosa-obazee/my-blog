@@ -51,4 +51,46 @@ const signUp = async (req, res) => {
   }
 };
 
-module.exports = { signUp };
+const logIn = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await prisma.blog_User.findUnique({
+      where: { email: email },
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email address" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" },
+    );
+
+    res.json({
+      message: "Login successful",
+      token: token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error during login" });
+  }
+};
+
+module.exports = { signUp, logIn };
