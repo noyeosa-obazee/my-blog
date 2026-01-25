@@ -27,16 +27,6 @@
   gap: 0.5rem;
 }
 
-.logo::after {
-  content: "";
-  width: 8px;
-  height: 8px;
-  background: var(--primary);
-  border-radius: 50%;
-  display: inline-block;
-  margin-top: 6px;
-}
-
 .links {
   display: flex;
   align-items: center;
@@ -59,13 +49,10 @@
 }
 
 .btnLogout {
-  color: var(--text-muted);
+  color: #dc2626;
   background: transparent;
   font-weight: 600;
-  font-size: 0.9rem;
-}
-.btnLogout:hover {
-  color: #dc2626;
+  /* font-size: 0.9rem; */
 }
 
 .btnLogin {
