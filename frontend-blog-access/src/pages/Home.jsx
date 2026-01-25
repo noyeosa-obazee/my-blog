@@ -1,0 +1,64 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { format } from "date-fns";
+import styles from "./Home.module.css";
+
+const Home = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/posts")
+      .then((res) => res.json())
+      .then((data) => setPosts(data))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading)
+    return (
+      <div style={{ textAlign: "center", marginTop: "50px" }}>Loading...</div>
+    );
+
+  return (
+    <div>
+      <header className={styles.hero}>
+        <h1 className={styles.title}>
+          Read. Learn. <span className={styles.highlight}>Evolve.</span>
+        </h1>
+        <p className={styles.subtitle}>
+          Deep dives into code, law, and everything in between.
+        </p>
+      </header>
+
+      <div className={styles.grid}>
+        {posts.map((post) => (
+          <article key={post.id} className={styles.card}>
+            <div className={styles.meta}>
+              <span className={styles.tag}>Article</span>
+              <span className={styles.date}>
+                {format(new Date(post.createdAt), "MMM d, yyyy")}
+              </span>
+            </div>
+
+            <Link to={`/posts/${post.id}`}>
+              <h2 className={styles.cardTitle}>{post.title}</h2>
+            </Link>
+
+            <p className={styles.cardExcerpt}>
+              {post.content.substring(0, 100)}...
+            </p>
+
+            <div className={styles.cardFooter}>
+              <span className={styles.author}>By {post.author.username}</span>
+              <Link to={`/posts/${post.id}`} className={styles.readMore}>
+                Read More →
+              </Link>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Home;

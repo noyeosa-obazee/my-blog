@@ -1,0 +1,94 @@
+.nav {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 0 1.5rem;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+}
+
+.logo span {
+  color: var(--text-main);
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.link {
+  color: var(--text-muted);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: var(--primary);
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.greeting {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.username {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.btnLogout {
+  padding: 0.5rem 1.2rem;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  background: transparent;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.btnLogout:hover {
+  background: #fef2f2;
+}
+
+.btnLogin {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.btnSignup {
+  background: var(--primary);
+  color: var(--text-main);
+  padding: 0.6rem 1.5rem;
+  border-radius: 20px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  transition: transform 0.2s;
+}
+
+.btnSignup:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+}
