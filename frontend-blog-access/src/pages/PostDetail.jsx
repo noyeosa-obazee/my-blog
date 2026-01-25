@@ -37,7 +37,7 @@ const PostDetail = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ content: newComment }),
+        body: JSON.stringify({ text: newComment }),
       });
 
       setNewComment("");
@@ -61,10 +61,10 @@ const PostDetail = () => {
         <div className={styles.meta}>
           By{" "}
           <span style={{ fontWeight: "bold", color: "#4f46e5" }}>
-            {post.author.username}
+            {post.user.username}
           </span>
           {" • "}
-          {format(new Date(post.createdAt), "MMMM d, yyyy")}
+          {format(new Date(post.date), "MMMM d, yyyy")}
         </div>
       </header>
 
@@ -106,13 +106,13 @@ const PostDetail = () => {
             <div key={comment.id} className={styles.comment}>
               <div className={styles.commentHeader}>
                 <span className={styles.commentAuthor}>
-                  {comment.author.username}
+                  {comment.user.username || comment.user.email}
                 </span>
                 <span className={styles.commentDate}>
-                  {format(new Date(comment.createdAt), "MMM d, yyyy")}
+                  {format(new Date(comment.date), "MMM d, yyyy")}
                 </span>
               </div>
-              <p className={styles.commentBody}>{comment.content}</p>
+              <p className={styles.commentBody}>{comment.text}</p>
             </div>
           ))}
         </div>

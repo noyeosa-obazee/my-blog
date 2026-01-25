@@ -11,6 +11,7 @@ const Home = () => {
     fetch("http://localhost:3000/posts")
       .then((res) => res.json())
       .then((data) => setPosts(data))
+      .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
 
@@ -36,7 +37,7 @@ const Home = () => {
             <div className={styles.meta}>
               <span className={styles.tag}>Article</span>
               <span className={styles.date}>
-                {format(new Date(post.createdAt), "MMM d, yyyy")}
+                {format(new Date(post.date), "MMM d, yyyy")}
               </span>
             </div>
 
@@ -45,11 +46,11 @@ const Home = () => {
             </Link>
 
             <p className={styles.cardExcerpt}>
-              {post.content.substring(0, 100)}...
+              {post.text.substring(0, 100)}...
             </p>
 
             <div className={styles.cardFooter}>
-              <span className={styles.author}>By {post.author.username}</span>
+              <span className={styles.author}>By {post.user.username}</span>
               <Link to={`/posts/${post.id}`} className={styles.readMore}>
                 Read More →
               </Link>
