@@ -68,7 +68,7 @@ const PostDetail = () => {
         </div>
       </header>
 
-      <div className={styles.content}>{post.content}</div>
+      <div className={styles.content}>{post.text}</div>
 
       <div className={styles.commentsSection}>
         <h3 className={styles.sectionTitle}>
