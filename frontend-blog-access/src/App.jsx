@@ -4,8 +4,8 @@ import Navbar from "./components/Navbar";
 
 import Home from "./pages/Home";
 import PostDetail from "./pages/PostDetail";
-// import Login from "./pages/Login";
-// import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const Layout = () => {
   return (
@@ -41,8 +41,8 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="posts/:id" element={<PostDetail />} />
-            {/* <Route path="login" element={<Login />} />
-          <Route path="signup" element={<Signup />} /> */}
+            <Route path="login" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
 
             {/* Future Idea: Protected Routes (e.g., Admin Dashboard) 
             You would wrap these in a <RequireAuth> component later.
