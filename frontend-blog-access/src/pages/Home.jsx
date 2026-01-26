@@ -15,11 +15,6 @@ const Home = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading)
-    return (
-      <div style={{ textAlign: "center", marginTop: "50px" }}>Loading...</div>
-    );
-
   return (
     <div>
       <header className={styles.hero}>
@@ -31,33 +26,37 @@ const Home = () => {
         </p>
       </header>
 
-      <div className={styles.grid}>
-        {posts.map((post) => (
-          <article key={post.id} className={styles.card}>
-            <div className={styles.meta}>
-              <span className={styles.tag}>Article</span>
-              <span className={styles.date}>
-                {format(new Date(post.date), "MMM d, yyyy")}
-              </span>
-            </div>
+      {loading ? (
+        <div style={{ textAlign: "center", marginTop: "50px" }}>Loading...</div>
+      ) : (
+        <div className={styles.grid}>
+          {posts.map((post) => (
+            <article key={post.id} className={styles.card}>
+              <div className={styles.meta}>
+                <span className={styles.tag}>Article</span>
+                <span className={styles.date}>
+                  {format(new Date(post.date), "MMM d, yyyy")}
+                </span>
+              </div>
 
-            <Link to={`/posts/${post.id}`}>
-              <h2 className={styles.cardTitle}>{post.title}</h2>
-            </Link>
-
-            <p className={styles.cardExcerpt}>
-              {post.text.substring(0, 100)}...
-            </p>
-
-            <div className={styles.cardFooter}>
-              <span className={styles.author}>By {post.user.username}</span>
-              <Link to={`/posts/${post.id}`} className={styles.readMore}>
-                Read More →
+              <Link to={`/posts/${post.id}`}>
+                <h2 className={styles.cardTitle}>{post.title}</h2>
               </Link>
-            </div>
-          </article>
-        ))}
-      </div>
+
+              <p className={styles.cardExcerpt}>
+                {post.text.substring(0, 100)}...
+              </p>
+
+              <div className={styles.cardFooter}>
+                <span className={styles.author}>By {post.user.username}</span>
+                <Link to={`/posts/${post.id}`} className={styles.readMore}>
+                  Read More →
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

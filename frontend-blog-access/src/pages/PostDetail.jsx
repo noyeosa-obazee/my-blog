@@ -72,7 +72,7 @@ const PostDetail = () => {
 
       <div className={styles.commentsSection}>
         <h3 className={styles.sectionTitle}>
-          Discussion ({post.comments.length})
+          Comments ({post.comments.length})
         </h3>
 
         {user ? (

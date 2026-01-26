@@ -27,7 +27,7 @@ const Layout = () => {
           borderTop: "1px solid #e2e8f0",
         }}
       >
-        © 2026 DevBlog. Built with React, Node & Prisma.
+        © 2026 DevBlog.
       </footer>
     </div>
   );

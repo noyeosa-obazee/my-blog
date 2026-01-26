@@ -15,7 +15,6 @@
   letter-spacing: -0.02em;
   margin-bottom: 1rem;
   color: var(--text-main);
-  line-height: 1.2;
 }
 
 .meta {
@@ -25,8 +24,6 @@
 }
 
 .content {
-  font-size: 1.125rem;
-  line-height: 1.8;
   color: #334155;
   margin-bottom: 4rem;
 }
@@ -83,7 +80,6 @@
   background: var(--primary-hover);
 }
 
-/* Login Prompt */
 .loginPrompt {
   background: var(--bg-body);
   padding: 2rem;
