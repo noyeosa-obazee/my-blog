@@ -1,0 +1,49 @@
+.createPostContainer {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.createPostContainer h1 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #444;
+}
+
+.titleInput {
+  width: 100%;
+  padding: 10px;
+  font-family: inherit;
+  font-weight: 500;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.btnSave {
+  background-color: #047857;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnSave:hover {
+  background-color: #065f46;
+}
+
+.btnSave:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}

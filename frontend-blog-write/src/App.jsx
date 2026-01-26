@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import PostDetail from "./pages/PostDetail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import CreatePost from "./pages/PostCreate";
 
 const Layout = () => {
   const token = localStorage.getItem("token");
@@ -51,6 +52,10 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
               <Route path="posts/:id" element={<PostDetail />} />
+
+              <Route path="create" element={<CreatePost />} />
+
+              <Route path="edit/:id" element={<CreatePost />} />
             </Route>
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
