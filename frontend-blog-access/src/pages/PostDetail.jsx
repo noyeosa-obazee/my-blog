@@ -60,7 +60,7 @@ const PostDetail = () => {
         <h1 className={styles.title}>{post.title}</h1>
         <div className={styles.meta}>
           By{" "}
-          <span style={{ fontWeight: "bold", color: "#4f46e5" }}>
+          <span style={{ fontWeight: "bold", color: " var(--primary)" }}>
             {post.user.username}
           </span>
           {" • "}
@@ -79,7 +79,7 @@ const PostDetail = () => {
           <form onSubmit={handleSubmit} className={styles.form}>
             <textarea
               className={styles.textarea}
-              placeholder="Add to the discussion..."
+              placeholder="Add a comment..."
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               disabled={isSubmitting}
