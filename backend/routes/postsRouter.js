@@ -3,7 +3,13 @@ const ctrl = require("../controllers/appControllers");
 const passport = require("passport");
 const postRoutes = Router();
 
-postRoutes.get("/", ctrl.getPosts);
+postRoutes.get("/", ctrl.getPublishedPosts);
+postRoutes.get(
+  "/all",
+  passport.authenticate("jwt", { session: false }),
+  ctrl.requireAdmin,
+  ctrl.getAllPosts,
+);
 postRoutes.get("/:postId", ctrl.readPost);
 
 postRoutes.post(
