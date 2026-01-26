@@ -1,0 +1,77 @@
+.nav {
+  background: white;
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 0 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.greeting {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.username {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.btnLogout {
+  color: #dc2626;
+  background: transparent;
+  font-weight: 600;
+  /* font-size: 0.9rem; */
+}
+
+.btnLogin {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.btnLogin:hover {
+  color: var(--primary);
+}
+
+.btnSignup {
+  background: var(--text-main);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition:
+    transform 0.1s,
+    background 0.2s;
+}
+
+.btnSignup:hover {
+  background: black;
+  transform: translateY(-1px);
+}

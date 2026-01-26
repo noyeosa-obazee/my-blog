@@ -1,0 +1,212 @@
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 0;
+}
+
+.form {
+  scroll-margin-top: 120px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  color: var(--text-main);
+}
+
+.meta {
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-family: monospace;
+}
+
+.content {
+  color: #334155;
+  margin-bottom: 4rem;
+}
+
+.commentsSection {
+  background: white;
+  padding: 2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-light);
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--bg-body);
+  padding-bottom: 0.5rem;
+}
+
+.textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  background: var(--bg-input);
+  font-family: inherit;
+  font-size: 1rem;
+  min-height: 120px;
+  margin-bottom: 1rem;
+  transition:
+    border 0.2s,
+    background 0.2s;
+  box-sizing: border-box;
+}
+
+.textarea:focus {
+  outline: none;
+  background: white;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btnSubmit {
+  background: var(--primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  float: right;
+  transition: background 0.2s;
+}
+
+.btnSubmit:hover {
+  background: var(--primary-hover);
+}
+
+.loginPrompt {
+  background: var(--bg-body);
+  padding: 2rem;
+  text-align: center;
+  border-radius: var(--radius);
+}
+
+.linkLogin {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.commentList {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.comment {
+  border-bottom: 1px solid var(--bg-body);
+  padding-bottom: 1rem;
+}
+.comment:last-child {
+  border-bottom: none;
+}
+
+.commentHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  align-items: center;
+}
+
+.flexer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.commentAuthor {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.commentDate {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.commentBody {
+  color: #475569;
+  margin: 0;
+}
+
+.editBadge {
+  background: #eff6ff;
+  color: var(--primary);
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius) var(--radius) 0 0;
+  border: 1px solid var(--border-light);
+  border-bottom: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btnCancel {
+  background: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-decoration: underline;
+}
+
+.textareaActive {
+  border-color: var(--primary);
+  background: white;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.authorInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btnActionEdit,
+.btnActionDelete {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.btnActionEdit {
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+}
+
+.btnActionEdit:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: #eff6ff;
+}
+
+.btnActionDelete {
+  color: #ef4444;
+  border: 1px solid transparent;
+}
+
+.btnActionDelete:hover {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
