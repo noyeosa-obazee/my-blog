@@ -18,6 +18,10 @@ const Navbar = () => {
               <span className={styles.greeting}>
                 Hello, <span className={styles.username}>{user.username}</span>
               </span>
+              <Link to="/create" className={styles.btnCreate}>
+                Create Post
+              </Link>
+
               <small>
                 <button onClick={logout} className={styles.btnLogout}>
                   Log out

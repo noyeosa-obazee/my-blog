@@ -1,4 +1,10 @@
-import { Routes, Route, Outlet, BrowserRouter } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Outlet,
+  BrowserRouter,
+  Navigate,
+} from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 
@@ -8,10 +14,13 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
 const Layout = () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
   return (
-    <div
-      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
-    >
+    <>
       <Navbar />
 
       <main style={{ flex: 1 }}>
@@ -29,28 +38,26 @@ const Layout = () => {
       >
         © 2026 DevBlog.
       </footer>
-    </div>
+    </>
   );
 };
 
 function App() {
   return (
-    <AuthProvider>
+    <div className="centered-container">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="posts/:id" element={<PostDetail />} />
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="posts/:id" element={<PostDetail />} />
+            </Route>
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
-
-            {/* Future Idea: Protected Routes (e.g., Admin Dashboard) 
-            You would wrap these in a <RequireAuth> component later.
-          */}
-          </Route>
-        </Routes>
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
-    </AuthProvider>
+    </div>
   );
 }
 

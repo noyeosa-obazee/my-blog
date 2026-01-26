@@ -109,6 +109,9 @@ const PostDetail = () => {
           {" • "}
           {format(new Date(post.date), "MMMM d, yyyy")}
         </div>
+        <Link to={`/edit/${post.id}`} className={styles.btnEdit}>
+          Edit Post
+        </Link>
       </header>
 
       <div className={styles.content}>{post.text}</div>

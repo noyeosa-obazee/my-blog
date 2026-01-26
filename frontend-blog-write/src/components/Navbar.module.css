@@ -75,3 +75,17 @@
   background: black;
   transform: translateY(-1px);
 }
+
+.btnCreate {
+  background-color: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btnCreate:hover {
+  background-color: #2563eb;
+}

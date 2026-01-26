@@ -46,6 +46,37 @@
   border-color: var(--border-light);
 }
 
+.cardActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px;
+}
+.statusFlag {
+  font-size: 0.85rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.statusFlag.published {
+  background-color: #e6fffa;
+  color: #047857;
+  border: 1px solid #047857;
+}
+
+.statusFlag.draft {
+  background-color: #fff5f5;
+  color: #c53030;
+  border: 1px solid #c53030;
+}
 .meta {
   display: flex;
   align-items: center;
@@ -97,4 +128,32 @@
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.btnEdit {
+  background-color: transparent;
+  border: 1px solid #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: #334155;
+  text-decoration: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btnEdit:hover {
+  background-color: #f1f5f9;
+}
+
+.btnToggle {
+  background-color: transparent;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  color: #64748b;
+}
+
+.btnToggle:hover {
+  color: #0f172a;
 }

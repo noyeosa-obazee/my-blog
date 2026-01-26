@@ -210,3 +210,18 @@
   background: #fef2f2;
   border-color: #fecaca;
 }
+
+.btnEdit {
+  background-color: transparent;
+  border: 1px solid #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: #334155;
+  text-decoration: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btnEdit:hover {
+  background-color: #f1f5f9;
+}

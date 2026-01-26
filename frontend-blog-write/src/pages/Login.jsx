@@ -33,6 +33,11 @@ const Login = () => {
         throw new Error(data.message || "Login failed");
       }
 
+      if (data.user.role !== "ADMIN") {
+        setError("Only admins have access to this site!");
+        return;
+      }
+
       login(data.user, data.token);
 
       navigate("/");

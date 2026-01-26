@@ -27,6 +27,12 @@ body {
   font-weight: 500;
 }
 
+.centered-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 a {
   text-decoration: none;
   color: inherit;
