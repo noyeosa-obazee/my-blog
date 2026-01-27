@@ -16,7 +16,10 @@ const Navbar = () => {
           {user ? (
             <div className={styles.userSection}>
               <span className={styles.greeting}>
-                Hello, <span className={styles.username}>{user.username}</span>
+                Hello,{" "}
+                <span className={styles.username}>
+                  {user.username || user.email}
+                </span>
               </span>
               <small>
                 <button onClick={logout} className={styles.btnLogout}>
