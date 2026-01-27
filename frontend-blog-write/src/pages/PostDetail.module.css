@@ -1,7 +1,10 @@
 .container {
-  max-width: 720px;
   margin: 0 auto;
-  padding: 3rem 0;
+
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 0;
 }
 
 .form {
@@ -224,4 +227,27 @@
 
 .btnEdit:hover {
   background-color: #f1f5f9;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header,
+  .btnEdit {
+    width: 100%;
+  }
+
+  .flexer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
 }

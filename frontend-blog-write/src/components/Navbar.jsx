@@ -21,9 +21,6 @@ const Navbar = () => {
                   {user.username || user.email}
                 </span>
               </span>
-              <Link to="/create" className={styles.btnCreate}>
-                Create Post
-              </Link>
 
               <small>
                 <button onClick={logout} className={styles.btnLogout}>

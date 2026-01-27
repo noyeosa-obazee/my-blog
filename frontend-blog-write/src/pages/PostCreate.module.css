@@ -52,3 +52,19 @@
   background-color: #9ca3af;
   cursor: not-allowed;
 }
+
+.tox-tinymce {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .createPostContainer h1 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .titleInput {
+    font-size: 1rem;
+  }
+}

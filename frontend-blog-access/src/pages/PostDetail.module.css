@@ -1,7 +1,10 @@
 .container {
-  max-width: 720px;
   margin: 0 auto;
-  padding: 3rem 0;
+
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 0;
 }
 
 .form {
@@ -209,4 +212,16 @@
 .btnActionDelete:hover {
   background: #fef2f2;
   border-color: #fecaca;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .flexer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
 }

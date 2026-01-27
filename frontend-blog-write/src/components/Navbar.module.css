@@ -76,16 +76,17 @@
   transform: translateY(-1px);
 }
 
-.btnCreate {
-  background-color: #3b82f6;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background 0.2s;
-}
+/* @media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
 
-.btnCreate:hover {
-  background-color: #2563eb;
-}
+  .links {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+} */

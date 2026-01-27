@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { format } from "date-fns";
 import styles from "./Home.module.css";
 
 const Home = () => {
+  const navigate = useNavigate();
   const { token } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +20,8 @@ const Home = () => {
         },
       });
       if (!response.ok) {
-        throw new Error(`Error: ${res.statusText}`);
+        navigate("/login");
+        throw new Error(`Error: ${response.statusText}`);
       }
 
       const data = await response.json();
@@ -102,66 +104,71 @@ const Home = () => {
 
   return (
     <div>
-      {loading ? (
-        <div style={{ textAlign: "center", marginTop: "50px" }}>
-          Loading posts...
-        </div>
-      ) : (
-        <div className={styles.grid}>
-          {posts.map((post) => (
-            <article key={post.id} className={styles.card}>
-              <div className={styles.meta}>
-                <span className={styles.tag}>Article</span>
-                <span className={styles.date}>
-                  {format(new Date(post.date), "MMM d, yyyy")}
-                </span>
-              </div>
-
-              <Link to={`/posts/${post.id}`}>
-                <h2 className={styles.cardTitle}>{post.title}</h2>
-              </Link>
-
-              <p className={styles.cardExcerpt}>
-                {post.text.substring(0, 100)}...
-              </p>
-
-              <div className={styles.cardActions}>
-                <span
-                  className={`${styles.statusFlag} ${post.published ? styles.published : styles.draft}`}
-                >
-                  {post.published ? "Published" : "Draft"}
-                </span>
-
-                <div className={styles.actionButtons}>
-                  <button
-                    className={styles.btnToggle}
-                    onClick={() => handleTogglePublish(post.id)}
-                  >
-                    {post.published ? "Unpublish" : "Publish"}
-                  </button>
-
-                  <Link to={`/edit/${post.id}`} className={styles.btnEdit}>
-                    Edit
-                  </Link>
-                  <button
-                    className={styles.btnDelete}
-                    onClick={() => handleDelete(post.id)}
-                  >
-                    Delete
-                  </button>
+      <div className={styles.columnFlexer}>
+        <Link to="/create" className={styles.btnCreate}>
+          Create Post
+        </Link>
+        {loading ? (
+          <div style={{ textAlign: "center", marginTop: "50px" }}>
+            Loading posts...
+          </div>
+        ) : (
+          <div className={styles.grid}>
+            {posts.map((post) => (
+              <article key={post.id} className={styles.card}>
+                <div className={styles.meta}>
+                  <span className={styles.tag}>Article</span>
+                  <span className={styles.date}>
+                    {format(new Date(post.date), "MMM d, yyyy")}
+                  </span>
                 </div>
-              </div>
 
-              <div className={styles.cardFooter}>
-                <span className={styles.author}>By {post.user.username}</span>
-                <Link to={`/posts/${post.id}`} className={styles.readMore}>
-                  Read More →
+                <Link to={`/posts/${post.id}`}>
+                  <h2 className={styles.cardTitle}>{post.title}</h2>
                 </Link>
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
+
+                <p className={styles.cardExcerpt}>
+                  {post.text.substring(0, 100)}...
+                </p>
+
+                <div className={styles.cardActions}>
+                  <span
+                    className={`${styles.statusFlag} ${post.published ? styles.published : styles.draft}`}
+                  >
+                    {post.published ? "Published" : "Draft"}
+                  </span>
+
+                  <div className={styles.actionButtons}>
+                    <button
+                      className={styles.btnToggle}
+                      onClick={() => handleTogglePublish(post.id)}
+                    >
+                      {post.published ? "Unpublish" : "Publish"}
+                    </button>
+
+                    <Link to={`/edit/${post.id}`} className={styles.btnEdit}>
+                      Edit
+                    </Link>
+                    <button
+                      className={styles.btnDelete}
+                      onClick={() => handleDelete(post.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+
+                <div className={styles.cardFooter}>
+                  <span className={styles.author}>By {post.user.username}</span>
+                  <Link to={`/posts/${post.id}`} className={styles.readMore}>
+                    Read More →
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

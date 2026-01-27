@@ -75,3 +75,9 @@
   background: black;
   transform: translateY(-1px);
 }
+
+/* @media (max-width: 768px) {
+  .links {
+    gap: -20px;
+  }
+} */
