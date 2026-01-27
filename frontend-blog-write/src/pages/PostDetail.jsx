@@ -109,6 +109,7 @@ const PostDetail = () => {
           {" • "}
           {format(new Date(post.date), "MMMM d, yyyy")}
         </div>
+        <br />
         <Link to={`/edit/${post.id}`} className={styles.btnEdit}>
           Edit Post
         </Link>
@@ -178,8 +179,8 @@ const PostDetail = () => {
 
                 <div className={styles.flexer}>
                   <p className={styles.commentBody}>{comment.text}</p>
-                  {user && user.id === comment.userId && (
-                    <div className={styles.actions}>
+                  <div className={styles.actions}>
+                    {user && user.id === comment.userId && (
                       <button
                         onClick={() => handleEditClick(comment)}
                         className={styles.btnActionEdit}
@@ -187,15 +188,18 @@ const PostDetail = () => {
                       >
                         Edit
                       </button>
-                      <button
-                        onClick={() => handleDelete(comment.id)}
-                        className={styles.btnActionDelete}
-                        title="Delete Comment"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  )}
+                    )}
+                    {user &&
+                      (user.id === comment.userId || user.role === "ADMIN") && (
+                        <button
+                          onClick={() => handleDelete(comment.id)}
+                          className={styles.btnActionDelete}
+                          title="Delete Comment"
+                        >
+                          Delete
+                        </button>
+                      )}
+                  </div>
                 </div>
               </div>
             ))}

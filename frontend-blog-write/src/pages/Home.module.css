@@ -53,12 +53,15 @@
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid #eee;
+  gap: 5px;
 }
 
 .actionButtons {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 8px;
 }
+
 .statusFlag {
   font-size: 0.85rem;
   font-weight: bold;
@@ -156,4 +159,22 @@
 
 .btnToggle:hover {
   color: #0f172a;
+}
+
+.btnDelete {
+  background-color: transparent;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: 8px;
+}
+
+.btnDelete:hover {
+  background-color: #fef2f2;
+  border-color: #dc2626;
+  color: #dc2626;
 }

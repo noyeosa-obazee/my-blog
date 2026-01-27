@@ -11,23 +11,53 @@ const Home = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await fetch("http://localhost:3000/posts/all", {
+      const response = await fetch("http://localhost:3000/posts/all", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!res.ok) {
+      if (!response.ok) {
         throw new Error(`Error: ${res.statusText}`);
       }
 
-      const data = await res.json();
+      const data = await response.json();
       setPosts(data);
     } catch (err) {
       console.log(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this post? This cannot be undone.",
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`http://localhost:3000/posts/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
+      } else {
+        alert("Failed to delete post.");
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      alert("An error occurred while deleting.");
     }
   };
 
@@ -48,7 +78,15 @@ const Home = () => {
       });
 
       if (response.ok) {
-        fetchPosts();
+        setPosts(
+          posts.map((post) => {
+            if (post.id === id) {
+              return { ...post, published: !post.published };
+            } else {
+              return post;
+            }
+          }),
+        );
       } else {
         alert("Failed to update post status. Please try again.");
       }
@@ -105,6 +143,12 @@ const Home = () => {
                   <Link to={`/edit/${post.id}`} className={styles.btnEdit}>
                     Edit
                   </Link>
+                  <button
+                    className={styles.btnDelete}
+                    onClick={() => handleDelete(post.id)}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
 
