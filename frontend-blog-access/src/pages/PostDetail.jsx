@@ -16,7 +16,7 @@ const PostDetail = () => {
 
   const fetchPost = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/posts/${id}`);
+      const res = await fetch(`${API_URL}/posts/${id}`);
       const data = await res.json();
       setPost(data);
     } catch (err) {
