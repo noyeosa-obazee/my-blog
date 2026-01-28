@@ -88,13 +88,6 @@ const Login = () => {
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
-
-        <div className={styles.footer}>
-          Don't have an account?{" "}
-          <Link to="/signup" className={styles.link}>
-            Sign up
-          </Link>
-        </div>
       </div>
     </div>
   );

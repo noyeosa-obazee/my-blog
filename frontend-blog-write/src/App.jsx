@@ -11,7 +11,6 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import PostDetail from "./pages/PostDetail";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 import CreatePost from "./pages/PostCreate";
 
 const Layout = () => {
