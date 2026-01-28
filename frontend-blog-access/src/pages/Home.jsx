@@ -4,11 +4,12 @@ import { format } from "date-fns";
 import styles from "./Home.module.css";
 
 const Home = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/posts")
+    fetch(`${API_URL}/posts`)
       .then((res) => res.json())
       .then((data) => setPosts(data))
       .catch((err) => console.log(err))

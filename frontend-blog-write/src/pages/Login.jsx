@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import styles from "./Auth.module.css";
 
 const Login = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -21,7 +22,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/auth/login", {
+      const response = await fetch(API_URL + "/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

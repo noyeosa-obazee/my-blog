@@ -4,7 +4,7 @@ const prisma = require("../config/prisma.js");
 
 const signUp = async (req, res) => {
   try {
-    const { email, password, username, confirmPassword } = req.body;
+    const { email, password, username, confirmPassword, role } = req.body;
 
     if (!email || !password) {
       return res
@@ -31,6 +31,7 @@ const signUp = async (req, res) => {
         email,
         password: hashedPassword,
         username,
+        role,
       },
     });
 

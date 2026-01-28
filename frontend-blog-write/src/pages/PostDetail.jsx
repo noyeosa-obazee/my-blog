@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import styles from "./PostDetail.module.css";
 
 const PostDetail = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   const { user, token } = useAuth();
   const [post, setPost] = useState(null);
@@ -15,7 +16,7 @@ const PostDetail = () => {
 
   const fetchPost = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/posts/${id}`);
+      const res = await fetch(`${API_URL}/posts/${id}`);
       const data = await res.json();
       setPost(data);
     } catch (err) {
@@ -41,7 +42,7 @@ const PostDetail = () => {
       return;
 
     try {
-      const res = await fetch(`http://localhost:3000/comments/${commentId}`, {
+      const res = await fetch(`${API_URL}/comments/${commentId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -63,7 +64,7 @@ const PostDetail = () => {
 
     try {
       if (editingComment) {
-        await fetch(`http://localhost:3000/comments/${editingComment.id}`, {
+        await fetch(`${API_URL}/comments/${editingComment.id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -72,7 +73,7 @@ const PostDetail = () => {
           body: JSON.stringify({ text: newComment }),
         });
       } else {
-        await fetch(`http://localhost:3000/posts/${id}/comments`, {
+        await fetch(`${API_URL}/posts/${id}/comments`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

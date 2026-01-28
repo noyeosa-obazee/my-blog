@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import styles from "./Home.module.css";
 
 const Home = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const { token } = useAuth();
   const [posts, setPosts] = useState([]);
@@ -12,7 +13,7 @@ const Home = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("http://localhost:3000/posts/all", {
+      const response = await fetch(API_URL + "/posts/all", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +46,7 @@ const Home = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(`http://localhost:3000/posts/${id}`, {
+      const response = await fetch(`${API_URL}/posts/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -66,7 +67,7 @@ const Home = () => {
   const handleTogglePublish = async (id) => {
     const postToUpdate = posts.find((p) => p.id === id);
     try {
-      const response = await fetch(`http://localhost:3000/posts/${id}`, {
+      const response = await fetch(`${API_URL}/posts/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import styles from "./Auth.module.css";
 
 const Signup = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/auth/signup", {
+      const response = await fetch(API_URL + "/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
