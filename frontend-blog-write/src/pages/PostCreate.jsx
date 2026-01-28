@@ -4,6 +4,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import styles from "./PostCreate.module.css";
 
 const CreatePost = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -21,7 +22,7 @@ const CreatePost = () => {
 
   const fetchPostData = async (postId) => {
     try {
-      const res = await fetch(`http://localhost:3000/posts/${postId}`);
+      const res = await fetch(`${API_URL}/posts/${postId}`);
       if (!res.ok) throw new Error("Failed to load post");
       const data = await res.json();
 
@@ -39,9 +40,7 @@ const CreatePost = () => {
 
     const token = localStorage.getItem("token");
 
-    const url = isEditMode
-      ? `http://localhost:3000/posts/${id}`
-      : "http://localhost:3000/posts";
+    const url = isEditMode ? `${API_URL}/posts/${id}` : `${API_URL}/posts`;
 
     const method = isEditMode ? "PUT" : "POST";
 
