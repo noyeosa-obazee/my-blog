@@ -58,7 +58,6 @@ function App() {
               <Route path="edit/:id" element={<CreatePost />} />
             </Route>
             <Route path="login" element={<Login />} />
-            <Route path="signup" element={<Signup />} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
