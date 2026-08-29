@@ -44,8 +44,8 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
 
-            {/* Future Idea: Protected Routes (e.g., Admin Dashboard) 
-            You would wrap these in a <RequireAuth> component later.
+            {/* Future Idea: Protected Routes (e.g., Admin Dashboard)
+            We can  wrap these in a <RequireAuth> component later.
           */}
           </Route>
         </Routes>
