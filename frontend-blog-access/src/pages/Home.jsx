@@ -11,7 +11,10 @@ const Home = () => {
   useEffect(() => {
     fetch(`${API_URL}/posts`)
       .then((res) => res.json())
-      .then((data) => setPosts(data || []))
+      .then((data) => {
+        setPosts(data || []);
+        console.log(data)
+      })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
