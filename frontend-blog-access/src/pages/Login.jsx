@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useAuth } from "../context/useAuth";
+import { getErrorMessage, readApiResponse } from "../utils/api";
 import styles from "./Auth.module.css";
 
 const Login = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -28,17 +30,13 @@ const Login = () => {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
-      }
+      const data = await readApiResponse(response, "Login failed.");
 
       login(data.user, data.token);
 
       navigate("/");
     } catch (err) {
-      setError(err.message);
+      setError(getErrorMessage(err, "Login failed."));
     } finally {
       setLoading(false);
     }
@@ -52,6 +50,9 @@ const Login = () => {
           Enter your credentials to access your account.
         </p>
 
+        {location.state?.notice && (
+          <div className={styles.success}>{location.state.notice}</div>
+        )}
         {error && <div className={styles.error}>{error}</div>}
 
         <form onSubmit={handleSubmit} className={styles.form}>

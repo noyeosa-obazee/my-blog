@@ -1,43 +1,30 @@
 const { Router } = require("express");
 const ctrl = require("../controllers/appControllers");
-const passport = require("passport");
+const authenticateJwt = require("../middlewares/authenticateJwt");
 const postRoutes = Router();
 
 postRoutes.get("/", ctrl.getPublishedPosts);
+postRoutes.get("/all", authenticateJwt, ctrl.requireAdmin, ctrl.getAllPosts);
 postRoutes.get(
-  "/all",
-  passport.authenticate("jwt", { session: false }),
+  "/admin/:postId",
+  authenticateJwt,
   ctrl.requireAdmin,
-  ctrl.getAllPosts,
+  ctrl.readAdminPost,
 );
 postRoutes.get("/:postId", ctrl.readPost);
 
-postRoutes.post(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  ctrl.requireAdmin,
-  ctrl.createPost,
-);
+postRoutes.post("/", authenticateJwt, ctrl.requireAdmin, ctrl.createPost);
 
-postRoutes.put(
-  "/:postId",
-  passport.authenticate("jwt", { session: false }),
-  ctrl.requireAdmin,
-  ctrl.updatePost,
-);
+postRoutes.put("/:postId", authenticateJwt, ctrl.requireAdmin, ctrl.updatePost);
 
 postRoutes.delete(
   "/:postId",
-  passport.authenticate("jwt", { session: false }),
+  authenticateJwt,
   ctrl.requireAdmin,
   ctrl.deletePost,
 );
 
-postRoutes.post(
-  "/:postId/comments",
-  passport.authenticate("jwt", { session: false }),
-  ctrl.createComment,
-);
+postRoutes.post("/:postId/comments", authenticateJwt, ctrl.createComment);
 
 postRoutes.get("/:postId/comments", ctrl.getPostComments);
 

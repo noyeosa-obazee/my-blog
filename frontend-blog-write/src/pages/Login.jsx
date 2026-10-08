@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
+import { getErrorMessage, readApiResponse } from "../utils/api";
 import styles from "./Auth.module.css";
 
 const Login = () => {
@@ -28,11 +29,7 @@ const Login = () => {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
-      }
+      const data = await readApiResponse(response, "Login failed.");
 
       if (data.user.role !== "ADMIN") {
         setError("Only admins have access to this site!");
@@ -43,7 +40,7 @@ const Login = () => {
 
       navigate("/");
     } catch (err) {
-      setError(err.message);
+      setError(getErrorMessage(err, "Login failed."));
     } finally {
       setLoading(false);
     }

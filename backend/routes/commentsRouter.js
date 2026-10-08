@@ -1,24 +1,12 @@
 const { Router } = require("express");
 const ctrl = require("../controllers/appControllers");
-const passport = require("passport");
+const authenticateJwt = require("../middlewares/authenticateJwt");
 const commentRoutes = Router();
 
-commentRoutes.post(
-  "/:commentId",
-  passport.authenticate("jwt", { session: false }),
-  ctrl.createComment,
-);
+commentRoutes.post("/:commentId", authenticateJwt, ctrl.createComment);
 
-commentRoutes.delete(
-  "/:commentId",
-  passport.authenticate("jwt", { session: false }),
-  ctrl.deleteComment,
-);
+commentRoutes.delete("/:commentId", authenticateJwt, ctrl.deleteComment);
 
-commentRoutes.put(
-  "/:commentId",
-  passport.authenticate("jwt", { session: false }),
-  ctrl.updateComment,
-);
+commentRoutes.put("/:commentId", authenticateJwt, ctrl.updateComment);
 
 module.exports = commentRoutes;

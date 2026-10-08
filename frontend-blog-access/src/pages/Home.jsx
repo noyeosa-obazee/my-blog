@@ -1,20 +1,51 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import StatePanel from "../components/StatePanel";
+import { getErrorMessage, readApiResponse } from "../utils/api";
 import styles from "./Home.module.css";
 
 const Home = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
-    fetch(`${API_URL}/posts`)
-      .then((res) => res.json())
-      .then((data) => setPosts(data))
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false));
-  }, []);
+    let isCurrent = true;
+
+    const loadPosts = async () => {
+      try {
+        const response = await fetch(`${API_URL}/posts`);
+        const data = await readApiResponse(response, "Could not load posts.");
+
+        if (!Array.isArray(data)) {
+          throw new Error("The server returned an invalid posts list.");
+        }
+
+        if (isCurrent) setPosts(data);
+      } catch (err) {
+        if (isCurrent) {
+          setError(getErrorMessage(err, "Could not load posts."));
+        }
+      } finally {
+        if (isCurrent) setLoading(false);
+      }
+    };
+
+    loadPosts();
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [API_URL, retryCount]);
+
+  const retryLoadingPosts = () => {
+    setError("");
+    setLoading(true);
+    setRetryCount((count) => count + 1);
+  };
 
   return (
     <div>
@@ -23,12 +54,24 @@ const Home = () => {
           Read. Learn. <span className={styles.highlight}>Evolve.</span>
         </h1>
         <p className={styles.subtitle}>
-          Deep dives into code, law, and everything in between.
+          Deep dives into all things programming.
         </p>
       </header>
 
       {loading ? (
-        <div style={{ textAlign: "center", marginTop: "50px" }}>Loading...</div>
+        <StatePanel variant="loading" title="Loading articles" />
+      ) : error ? (
+        <StatePanel
+          variant="error"
+          title="Articles are unavailable"
+          message={error}
+          action={<button onClick={retryLoadingPosts}>Try again</button>}
+        />
+      ) : posts.length === 0 ? (
+        <StatePanel
+          title="No articles yet"
+          message="There are no published articles to read right now. Check back soon."
+        />
       ) : (
         <div className={styles.grid}>
           {posts.map((post) => (

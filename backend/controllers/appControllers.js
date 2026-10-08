@@ -233,33 +233,49 @@ const deletePost = async (req, res) => {
   }
 };
 
-const readPost = async (req, res) => {
-  try {
-    const postId = req.params.postId;
+const findPostWithDetails = (postId) =>
+  prisma.blog_Post.findUnique({
+    where: { id: postId },
+    include: {
+      user: {
+        select: { username: true, email: true },
+      },
 
-    const post = await prisma.blog_Post.findUnique({
-      where: { id: postId },
-      include: {
-        user: {
-          select: { username: true, email: true },
-        },
-
-        comments: {
-          orderBy: { date: "desc" },
-          include: {
-            user: {
-              select: { username: true, email: true },
-            },
+      comments: {
+        orderBy: { date: "desc" },
+        include: {
+          user: {
+            select: { username: true, email: true },
           },
         },
       },
-    });
+    },
+  });
+
+const readPost = async (req, res) => {
+  try {
+    const post = await findPostWithDetails(req.params.postId);
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
     if (!post.published) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.json(post);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error fetching post" });
+  }
+};
+
+const readAdminPost = async (req, res) => {
+  try {
+    const post = await findPostWithDetails(req.params.postId);
+
+    if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
@@ -409,6 +425,7 @@ module.exports = {
   requireAdmin,
   createPost,
   readPost,
+  readAdminPost,
   updatePost,
   deletePost,
   deleteComment,

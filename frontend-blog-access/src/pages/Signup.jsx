@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { getErrorMessage, readApiResponse } from "../utils/api";
 import styles from "./Auth.module.css";
 
 const Signup = () => {
@@ -38,16 +39,13 @@ const Signup = () => {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      await readApiResponse(response, "Signup failed.");
 
-      if (!response.ok) {
-        throw new Error(data.message || "Signup failed");
-      }
-
-      alert("Account created! Please log in.");
-      navigate("/login");
+      navigate("/login", {
+        state: { notice: "Account created. You can now log in." },
+      });
     } catch (err) {
-      setError(err.message);
+      setError(getErrorMessage(err, "Signup failed."));
     } finally {
       setLoading(false);
     }

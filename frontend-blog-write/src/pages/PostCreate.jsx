@@ -1,53 +1,86 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Editor } from "@tinymce/tinymce-react";
+import { useAuth } from "../context/useAuth";
+import StatePanel from "../components/StatePanel";
+import { getErrorMessage, readApiResponse } from "../utils/api";
 import styles from "./PostCreate.module.css";
 
 const CreatePost = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   const navigate = useNavigate();
+  const { token } = useAuth();
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [isLoadingPost, setIsLoadingPost] = useState(Boolean(id));
+  const [loadError, setLoadError] = useState("");
+  const [submitError, setSubmitError] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
+  const isEditMode = Boolean(id);
 
   useEffect(() => {
-    if (id) {
-      setIsEditMode(true);
-      fetchPostData(id);
+    setLoadError("");
+    setIsLoadingPost(Boolean(id));
+    if (!id) {
+      setTitle("");
+      setContent("");
+      return undefined;
     }
-  }, [id]);
 
-  const fetchPostData = async (postId) => {
-    try {
-      const res = await fetch(`${API_URL}/posts/${postId}`);
-      if (!res.ok) throw new Error("Failed to load post");
-      const data = await res.json();
+    let isCurrent = true;
 
-      setTitle(data.title);
-      setContent(data.text);
-    } catch (err) {
-      console.error(err);
-      alert("Could not load post data");
-    }
+    const loadPostData = async () => {
+      try {
+        const response = await fetch(`${API_URL}/posts/admin/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await readApiResponse(
+          response,
+          "Could not load post data.",
+        );
+
+        if (isCurrent) {
+          setTitle(data.title);
+          setContent(data.text);
+        }
+      } catch (err) {
+        if (isCurrent) {
+          setLoadError(getErrorMessage(err, "Could not load post data."));
+        }
+      } finally {
+        if (isCurrent) setIsLoadingPost(false);
+      }
+    };
+
+    loadPostData();
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [API_URL, id, retryCount, token]);
+
+  const retryLoadingPost = () => {
+    setLoadError("");
+    setIsLoadingPost(true);
+    setRetryCount((count) => count + 1);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const token = localStorage.getItem("token");
+    setSubmitError("");
 
     const url = isEditMode ? `${API_URL}/posts/${id}` : `${API_URL}/posts`;
 
     const method = isEditMode ? "PUT" : "POST";
 
-    const postData = { title, content };
+    const postData = { title, text: content };
 
     try {
-      const res = await fetch(url, {
+      const response = await fetch(url, {
         method: method,
         headers: {
           "Content-Type": "application/json",
@@ -56,22 +89,48 @@ const CreatePost = () => {
         body: JSON.stringify(postData),
       });
 
-      if (!res.ok) throw new Error("Failed to save post");
+      await readApiResponse(response, "Failed to save post.");
 
       navigate("/");
     } catch (err) {
-      console.error(err);
-      alert("Failed to save post");
+      setSubmitError(getErrorMessage(err, "Failed to save post."));
     } finally {
       setLoading(false);
     }
   };
+
+  if (isLoadingPost) {
+    return <StatePanel variant="loading" title="Loading post" />;
+  }
+
+  if (loadError) {
+    return (
+      <StatePanel
+        variant="error"
+        title="Could not load this post"
+        message={loadError}
+        action={
+          <>
+            <button onClick={retryLoadingPost}>Try again</button>
+            <Link to="/">Back to posts</Link>
+          </>
+        }
+      />
+    );
+  }
 
   return (
     <div className={styles.createPostContainer}>
       <h1>{isEditMode ? "Edit Post" : "Create New Post"}</h1>
 
       <form onSubmit={handleSubmit}>
+        {submitError && (
+          <StatePanel
+            variant="error"
+            title="Could not save post"
+            message={submitError}
+          />
+        )}
         <div className={styles.formGroup}>
           <label>Post Title</label>
           <input
@@ -89,7 +148,7 @@ const CreatePost = () => {
           <Editor
             apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
             value={content}
-            onEditorChange={(newValue, editor) => setContent(newValue)}
+            onEditorChange={(newValue) => setContent(newValue)}
             init={{
               height: 400,
               menubar: false,

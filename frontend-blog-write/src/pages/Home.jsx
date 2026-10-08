@@ -1,37 +1,56 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/useAuth";
 import { format } from "date-fns";
+import StatePanel from "../components/StatePanel";
+import { getErrorMessage, readApiResponse } from "../utils/api";
 import styles from "./Home.module.css";
 
 const Home = () => {
   const API_URL = import.meta.env.VITE_API_URL;
-  const navigate = useNavigate();
   const { token } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [actionError, setActionError] = useState("");
+  const [pendingAction, setPendingAction] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
 
-  const fetchPosts = async () => {
-    try {
-      const response = await fetch(API_URL + "/posts/all", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        navigate("/login");
-        throw new Error(`Error: ${response.statusText}`);
+  useEffect(() => {
+    let isCurrent = true;
+
+    const loadPosts = async () => {
+      try {
+        const response = await fetch(`${API_URL}/posts/all`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await readApiResponse(response, "Could not load posts.");
+
+        if (!Array.isArray(data)) {
+          throw new Error("The server returned an invalid posts list.");
+        }
+
+        if (isCurrent) setPosts(data);
+      } catch (err) {
+        if (isCurrent) {
+          setError(getErrorMessage(err, "Could not load posts."));
+        }
+      } finally {
+        if (isCurrent) setLoading(false);
       }
+    };
 
-      const data = await response.json();
-      setPosts(data);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
+    loadPosts();
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [API_URL, token, retryCount]);
+
+  const retryLoadingPosts = () => {
+    setError("");
+    setLoading(true);
+    setRetryCount((count) => count + 1);
   };
 
   const handleDelete = async (id) => {
@@ -43,9 +62,9 @@ const Home = () => {
       return;
     }
 
+    setActionError("");
+    setPendingAction({ id, type: "delete" });
     try {
-      const token = localStorage.getItem("token");
-
       const response = await fetch(`${API_URL}/posts/${id}`, {
         method: "DELETE",
         headers: {
@@ -53,19 +72,21 @@ const Home = () => {
         },
       });
 
-      if (response.ok) {
-        setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
-      } else {
-        alert("Failed to delete post.");
-      }
-    } catch (error) {
-      console.error("Error deleting post:", error);
-      alert("An error occurred while deleting.");
+      await readApiResponse(response, "Could not delete this post.");
+      setPosts((currentPosts) => currentPosts.filter((post) => post.id !== id));
+    } catch (err) {
+      setActionError(getErrorMessage(err, "Could not delete this post."));
+    } finally {
+      setPendingAction(null);
     }
   };
 
   const handleTogglePublish = async (id) => {
     const postToUpdate = posts.find((p) => p.id === id);
+    if (!postToUpdate) return;
+
+    setActionError("");
+    setPendingAction({ id, type: "publish" });
     try {
       const response = await fetch(`${API_URL}/posts/${id}`, {
         method: "PUT",
@@ -80,28 +101,18 @@ const Home = () => {
         }),
       });
 
-      if (response.ok) {
-        setPosts(
-          posts.map((post) => {
-            if (post.id === id) {
-              return { ...post, published: !post.published };
-            } else {
-              return post;
-            }
-          }),
-        );
-      } else {
-        alert("Failed to update post status. Please try again.");
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-      alert("Network error. Check your connection.");
+      await readApiResponse(response, "Could not update this post.");
+      setPosts((currentPosts) =>
+        currentPosts.map((post) =>
+          post.id === id ? { ...post, published: !post.published } : post,
+        ),
+      );
+    } catch (err) {
+      setActionError(getErrorMessage(err, "Could not update this post."));
+    } finally {
+      setPendingAction(null);
     }
   };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
 
   return (
     <div>
@@ -109,10 +120,28 @@ const Home = () => {
         <Link to="/create" className={styles.btnCreate}>
           Create Post
         </Link>
+        {actionError && (
+          <StatePanel
+            variant="error"
+            title="Post action failed"
+            message={actionError}
+          />
+        )}
         {loading ? (
-          <div style={{ textAlign: "center", marginTop: "50px" }}>
-            Loading posts...
-          </div>
+          <StatePanel variant="loading" title="Loading posts" />
+        ) : error ? (
+          <StatePanel
+            variant="error"
+            title="Posts are unavailable"
+            message={error}
+            action={<button onClick={retryLoadingPosts}>Try again</button>}
+          />
+        ) : posts.length === 0 ? (
+          <StatePanel
+            title="No posts yet"
+            message="Create your first post to start building the blog."
+            action={<Link to="/create">Create your first post</Link>}
+          />
         ) : (
           <div className={styles.grid}>
             {posts.map((post) => (
@@ -143,8 +172,14 @@ const Home = () => {
                     <button
                       className={styles.btnToggle}
                       onClick={() => handleTogglePublish(post.id)}
+                      disabled={pendingAction !== null}
                     >
-                      {post.published ? "Unpublish" : "Publish"}
+                      {pendingAction?.id === post.id &&
+                      pendingAction.type === "publish"
+                        ? "Saving..."
+                        : post.published
+                          ? "Unpublish"
+                          : "Publish"}
                     </button>
 
                     <Link to={`/edit/${post.id}`} className={styles.btnEdit}>
@@ -153,8 +188,12 @@ const Home = () => {
                     <button
                       className={styles.btnDelete}
                       onClick={() => handleDelete(post.id)}
+                      disabled={pendingAction !== null}
                     >
-                      Delete
+                      {pendingAction?.id === post.id &&
+                      pendingAction.type === "delete"
+                        ? "Deleting..."
+                        : "Delete"}
                     </button>
                   </div>
                 </div>

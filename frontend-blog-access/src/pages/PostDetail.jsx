@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { format } from "date-fns";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
+import StatePanel from "../components/StatePanel";
+import { getErrorMessage, readApiResponse } from "../utils/api";
 import styles from "./PostDetail.module.css";
 
 const PostDetail = () => {
@@ -9,24 +11,53 @@ const PostDetail = () => {
   const { id } = useParams();
   const { user, token } = useAuth();
   const [post, setPost] = useState(null);
+  const [isLoadingPost, setIsLoadingPost] = useState(true);
+  const [postError, setPostError] = useState("");
+  const [commentError, setCommentError] = useState("");
   const [newComment, setNewComment] = useState("");
   const [editingComment, setEditingComment] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
   const formRef = useRef(null);
 
-  const fetchPost = async () => {
-    try {
-      const res = await fetch(`${API_URL}/posts/${id}`);
-      const data = await res.json();
-      setPost(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
-    fetchPost();
-  }, [id]);
+    let isCurrent = true;
+    setIsLoadingPost(true);
+    setPost(null);
+    setPostError("");
+
+    const loadPost = async () => {
+      try {
+        const response = await fetch(`${API_URL}/posts/${id}`);
+        const data = await readApiResponse(
+          response,
+          "Could not load this article.",
+        );
+
+        if (isCurrent) setPost(data);
+      } catch (err) {
+        if (isCurrent) {
+          setPostError(getErrorMessage(err, "Could not load this article."));
+        }
+      } finally {
+        if (isCurrent) setIsLoadingPost(false);
+      }
+    };
+
+    loadPost();
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [API_URL, id, retryCount]);
+
+  const retryLoadingPost = () => {
+    setPost(null);
+    setPostError("");
+    setIsLoadingPost(true);
+    setRetryCount((count) => count + 1);
+  };
   const handleEditClick = (comment) => {
     setEditingComment(comment);
     setNewComment(comment.text);
@@ -41,30 +72,35 @@ const PostDetail = () => {
     if (!window.confirm("Are you sure you want to delete this comment?"))
       return;
 
+    setCommentError("");
+    setDeletingCommentId(commentId);
     try {
-      const res = await fetch(`${API_URL}/comments/${commentId}`, {
+      const response = await fetch(`${API_URL}/comments/${commentId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (res.ok) {
-        setPost((prev) => ({
-          ...prev,
-          comments: prev.comments.filter((c) => c.id !== commentId),
-        }));
-      }
+      await readApiResponse(response, "Could not delete this comment.");
+      setPost((prev) => ({
+        ...prev,
+        comments: prev.comments.filter((comment) => comment.id !== commentId),
+      }));
     } catch (err) {
-      alert("Failed to delete comment");
+      setCommentError(getErrorMessage(err, "Could not delete this comment."));
+    } finally {
+      setDeletingCommentId(null);
     }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
+    setCommentError("");
     setIsSubmitting(true);
 
     try {
+      let response;
       if (editingComment) {
-        await fetch(`${API_URL}/comments/${editingComment.id}`, {
+        response = await fetch(`${API_URL}/comments/${editingComment.id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -73,7 +109,7 @@ const PostDetail = () => {
           body: JSON.stringify({ text: newComment }),
         });
       } else {
-        await fetch(`${API_URL}/posts/${id}/comments`, {
+        response = await fetch(`${API_URL}/posts/${id}/comments`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -83,20 +119,47 @@ const PostDetail = () => {
         });
       }
 
+      const data = await readApiResponse(
+        response,
+        "Could not save your comment.",
+      );
+      setPost((prev) => ({
+        ...prev,
+        comments: editingComment
+          ? prev.comments.map((comment) =>
+              comment.id === editingComment.id
+                ? { ...comment, text: data.comment.text }
+                : comment,
+            )
+          : [data, ...prev.comments],
+      }));
       setNewComment("");
       setEditingComment(null);
-      fetchPost();
     } catch (err) {
-      alert("Failed to post comment");
+      setCommentError(getErrorMessage(err, "Could not save your comment."));
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (!post)
+  if (isLoadingPost)
+    return <StatePanel variant="loading" title="Loading article" />;
+
+  if (postError || !post) {
     return (
-      <div style={{ textAlign: "center", marginTop: "50px" }}>Loading...</div>
+      <StatePanel
+        variant="error"
+        title="Article unavailable"
+        message={postError || "This article could not be found."}
+        action={
+          <>
+            <button onClick={retryLoadingPost}>Try again</button>
+            <Link to="/">Back to articles</Link>
+          </>
+        }
+      />
     );
+  }
 
   return (
     <div className={styles.container}>
@@ -118,6 +181,14 @@ const PostDetail = () => {
         <h3 className={styles.sectionTitle}>
           Comments ({post.comments.length})
         </h3>
+
+        {commentError && (
+          <StatePanel
+            variant="error"
+            title="Comment action failed"
+            message={commentError}
+          />
+        )}
 
         {user ? (
           <form onSubmit={handleSubmit} className={styles.form} ref={formRef}>
@@ -162,7 +233,12 @@ const PostDetail = () => {
           </div>
         )}
         <div className={styles.commentList}>
-          {post.comments &&
+          {post.comments.length === 0 ? (
+            <StatePanel
+              title="No comments yet"
+              message="Be the first to add to the conversation."
+            />
+          ) : (
             post.comments.map((comment) => (
               <div key={comment.id} className={styles.comment}>
                 <div className={styles.commentHeader}>
@@ -186,17 +262,22 @@ const PostDetail = () => {
                         Edit
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleDelete(comment.id)}
                         className={styles.btnActionDelete}
                         title="Delete Comment"
+                        disabled={deletingCommentId === comment.id}
                       >
-                        Delete
+                        {deletingCommentId === comment.id
+                          ? "Deleting..."
+                          : "Delete"}
                       </button>
                     </div>
                   )}
                 </div>
               </div>
-            ))}
+            ))
+          )}
         </div>
       </div>
     </div>
