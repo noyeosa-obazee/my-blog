@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { format } from "date-fns";
+import DOMPurify from "dompurify";
 import { useAuth } from "../context/useAuth";
 import StatePanel from "../components/StatePanel";
 import { getErrorMessage, readApiResponse } from "../utils/api";
@@ -166,16 +167,18 @@ const PostDetail = () => {
       <header className={styles.header}>
         <h1 className={styles.title}>{post.title}</h1>
         <div className={styles.meta}>
-          By{" "}
-          <span style={{ fontWeight: "bold", color: " var(--primary)" }}>
-            {post.user.username}
-          </span>
+          By <span className={styles.authorName}>{post.user.username}</span>
           {" • "}
           {format(new Date(post.date), "MMMM d, yyyy")}
         </div>
       </header>
 
-      <div className={styles.content}>{post.text}</div>
+      <div
+        className={styles.content}
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(post.text || ""),
+        }}
+      />
 
       <div className={styles.commentsSection}>
         <h3 className={styles.sectionTitle}>
@@ -222,7 +225,6 @@ const PostDetail = () => {
                   ? "Update Comment"
                   : "Post Comment"}
             </button>
-            <div style={{ clear: "both" }}></div>
           </form>
         ) : (
           <div className={styles.loginPrompt}>

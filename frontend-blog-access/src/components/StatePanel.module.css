@@ -19,8 +19,8 @@
 }
 
 .error {
-  border-color: #fecaca;
-  background: #fffafa;
+  border-color: var(--danger-border);
+  background: var(--danger-bg);
 }
 
 .empty {
@@ -43,7 +43,7 @@
 }
 
 .error .title {
-  color: #b91c1c;
+  color: var(--danger);
 }
 
 .message {
@@ -71,7 +71,7 @@
   border: 1px solid var(--primary);
   border-radius: 6px;
   background: var(--primary);
-  color: white;
+  color: var(--on-primary);
   font: inherit;
   font-weight: 600;
   text-decoration: none;

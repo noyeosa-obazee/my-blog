@@ -162,8 +162,29 @@ const CreatePost = () => {
                 alignleft aligncenter alignright alignjustify | \
                 bullist numlist outdent indent | removeformat | help",
               content_style: `
-                @import url('https://fonts.googleapis.com/css2?family=Google+Sans+Code:wght@400;600;700&display=swap');
-                body { font-family: Google Sans Code, monospace; font-weight: 500; }`,
+                @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+                :root {
+                  --primary: #176b5b;
+                  --primary-hover: #105548;
+                  --primary-soft: #e6f1ed;
+                  --accent: #bd8137;
+                  --text-main: #1b302a;
+                  --surface-muted: #eaf0ed;
+                  --border-light: #d9e3de;
+                }
+                body {
+                  color: var(--text-main);
+                  font-family: Nunito, sans-serif;
+                  font-size: 16px;
+                  font-weight: 500;
+                  line-height: 1.7;
+                }
+                a { color: var(--primary); }
+                blockquote {
+                  border-left: 3px solid var(--accent);
+                  background: var(--primary-soft);
+                }
+                pre { background: var(--surface-muted); }`,
             }}
           />
         </div>

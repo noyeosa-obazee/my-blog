@@ -1,5 +1,5 @@
 .nav {
-  background: white;
+  background: var(--bg-card);
   border-bottom: 1px solid var(--border-light);
   position: sticky;
   top: 0;
@@ -45,7 +45,7 @@
 }
 
 .btnLogout {
-  color: #dc2626;
+  color: var(--danger);
   background: transparent;
   font-weight: 600;
   /* font-size: 0.9rem; */
@@ -61,7 +61,7 @@
 
 .btnSignup {
   background: var(--text-main);
-  color: white;
+  color: var(--on-primary);
   padding: 0.6rem 1.2rem;
   border-radius: 6px;
   font-weight: 600;
@@ -72,7 +72,7 @@
 }
 
 .btnSignup:hover {
-  background: black;
+  background: var(--primary-hover);
   transform: translateY(-1px);
 }
 

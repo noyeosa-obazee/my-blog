@@ -20,31 +20,21 @@ const Layout = () => {
     return <Navigate to="/login" replace />;
   }
   return (
-    <>
+    <div className="app-shell">
       <Navbar />
 
-      <main style={{ flex: 1 }}>
+      <main className="app-main">
         <Outlet />
       </main>
 
-      <footer
-        style={{
-          textAlign: "center",
-          padding: "2rem",
-          color: "#94a3b8",
-          fontSize: "0.9rem",
-          borderTop: "1px solid #e2e8f0",
-        }}
-      >
-        © 2026 DevBlog.
-      </footer>
-    </>
+      <footer className="site-footer">© 2026 DevBlog.</footer>
+    </div>
   );
 };
 
 function App() {
   return (
-    <div className="centered-container">
+    <div className="app-shell">
       <BrowserRouter>
         <AuthProvider>
           <Routes>

@@ -1,67 +1,105 @@
 .createPostContainer {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  width: calc(100% - 2rem);
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2.5rem 0 4rem;
 }
 
 .createPostContainer h1 {
-  margin-bottom: 1.5rem;
-  color: #333;
+  margin: 0 0 1.5rem;
+  color: var(--text-main);
+  font-size: 2rem;
+  letter-spacing: 0;
 }
 
 .formGroup {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
 }
 
 .formGroup label {
   display: block;
   font-weight: bold;
-  margin-bottom: 0.5rem;
-  color: #444;
+  margin-bottom: 0.6rem;
+  color: var(--text-main);
+  font-size: 0.9rem;
 }
 
 .titleInput {
   width: 100%;
-  padding: 10px;
+  padding: 0.8rem 0.9rem;
   font-family: inherit;
   font-weight: 500;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  color: var(--text-main);
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .titleInput:focus {
-  outline: 2px solid #3b82f6;
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
 }
 
 .btnSave {
-  background-color: #047857;
-  color: white;
-  padding: 12px 24px;
+  background-color: var(--primary);
+  color: var(--on-primary);
+  padding: 0.75rem 1.25rem;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s;
-  font-weight: 500;
+  font: inherit;
+  font-weight: 700;
 }
 
 .btnSave:hover {
-  background-color: #065f46;
+  background-color: var(--primary-hover);
 }
 
 .btnSave:disabled {
-  background-color: #9ca3af;
+  background-color: var(--disabled-bg);
+  color: var(--disabled-text);
   cursor: not-allowed;
 }
 
-.tox-tinymce {
+:global(.tox-tinymce) {
   width: 100% !important;
   max-width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border-light) !important;
+  border-radius: 6px !important;
+}
+
+:global(.tox .tox-toolbar__primary),
+:global(.tox .tox-toolbar-overlord) {
+  background: var(--surface-muted) !important;
+}
+
+:global(.tox .tox-toolbar__group) {
+  border-color: var(--border-strong) !important;
+}
+
+:global(.tox .tox-tbtn:hover),
+:global(.tox .tox-tbtn--enabled) {
+  background: var(--primary-soft) !important;
+}
+
+:global(.tox .tox-tbtn svg) {
+  fill: var(--text-main) !important;
+}
+
+:global(.tox .tox-statusbar) {
+  border-top-color: var(--border-light) !important;
+  background: var(--bg-card) !important;
 }
 
 @media (max-width: 768px) {
   .createPostContainer h1 {
-    font-size: 1.5rem;
-    text-align: center;
+    font-size: 1.75rem;
   }
 
   .titleInput {

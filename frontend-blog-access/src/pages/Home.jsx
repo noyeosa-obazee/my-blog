@@ -1,9 +1,27 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import DOMPurify from "dompurify";
 import StatePanel from "../components/StatePanel";
 import { getErrorMessage, readApiResponse } from "../utils/api";
 import styles from "./Home.module.css";
+
+const getPostExcerpt = (content) => {
+  const sanitizedContent = DOMPurify.sanitize(content || "", {
+    RETURN_DOM: true,
+  });
+  const plainText = (
+    sanitizedContent.innerText ||
+    sanitizedContent.textContent ||
+    ""
+  )
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return plainText.length > 100
+    ? `${plainText.substring(0, 100)}...`
+    : plainText;
+};
 
 const Home = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -87,9 +105,7 @@ const Home = () => {
                 <h2 className={styles.cardTitle}>{post.title}</h2>
               </Link>
 
-              <p className={styles.cardExcerpt}>
-                {post.text.substring(0, 100)}...
-              </p>
+              <p className={styles.cardExcerpt}>{getPostExcerpt(post.text)}</p>
 
               <div className={styles.cardFooter}>
                 <span className={styles.author}>By {post.user.username}</span>
