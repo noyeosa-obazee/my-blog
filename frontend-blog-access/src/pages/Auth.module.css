@@ -136,3 +136,14 @@
   color: var(--primary-hover);
   text-decoration: underline;
 }
+
+@media (max-width: 480px) {
+  .container {
+    min-height: 70vh;
+    padding: 1.5rem 0.75rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+}

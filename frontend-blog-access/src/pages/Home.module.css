@@ -28,6 +28,8 @@
 
 .grid {
   display: grid;
+  width: 100%;
+  min-width: 0;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
   gap: 1.25rem;
   max-width: 1180px;
@@ -36,6 +38,7 @@
 }
 
 .card {
+  min-width: 0;
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
@@ -132,11 +135,15 @@
 }
 
 @media (max-width: 360px) {
+  .hero {
+    padding-inline: 0.75rem;
+  }
+
   .grid {
-    padding-inline: 1rem;
+    padding-inline: 0.75rem;
   }
 
   .title {
-    font-size: 2.25rem;
+    font-size: 2rem;
   }
 }

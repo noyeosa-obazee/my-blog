@@ -29,6 +29,10 @@
 }
 
 .meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
   color: var(--text-muted);
   font-size: 0.9rem;
 }
@@ -193,6 +197,7 @@
 
 .commentHeader {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -200,9 +205,11 @@
 }
 
 .commentAuthor {
+  min-width: 0;
   color: var(--text-main);
   font-size: 0.95rem;
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .commentDate {

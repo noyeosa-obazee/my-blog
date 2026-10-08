@@ -151,12 +151,11 @@ const CreatePost = () => {
             onEditorChange={(newValue) => setContent(newValue)}
             init={{
               height: 400,
+              min_height: 320,
+              toolbar_mode: "wrap",
               menubar: false,
-              plugins: [
-                "advlist autolink lists link image charmap print preview anchor",
-                "searchreplace visualblocks code fullscreen",
-                "insertdatetime media table paste code help wordcount",
-              ],
+              plugins:
+                "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste help wordcount",
               toolbar:
                 "undo redo | formatselect | bold italic backcolor | \
                 alignleft aligncenter alignright alignjustify | \
